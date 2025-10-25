@@ -4,10 +4,6 @@
   # NixOS 25.05 stable
   system.stateVersion = "25.05";
 
-  # Boot configuration for bare-metal
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-
   # Enable SSH service
   services.openssh = {
     enable = true;
