@@ -34,6 +34,7 @@
     wget
     curl
     git
+    openssh
   ];
 
   # Time zone
