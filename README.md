@@ -57,9 +57,8 @@ ls -lh result/iso/
 
 The main configuration is in `configuration.nix`. Key settings:
 
-- SSH server with password authentication enabled
+- SSH server with password authentication enabled and firewall automatically opened
 - DHCP networking enabled
-- Firewall configured to allow SSH (port 22)
 - Basic tools included: vim, wget, curl, git
 
 ## Customization
