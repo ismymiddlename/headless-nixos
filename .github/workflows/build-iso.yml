@@ -1,0 +1,51 @@
+name: Build and Release NixOS ISO
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v14
+
+      - name: Setup Nix cache
+        uses: DeterminateSystems/magic-nix-cache-action@v8
+
+      - name: Build ISO
+        run: |
+          nix build .#iso --print-build-logs
+
+      - name: Get ISO filename
+        id: iso
+        run: |
+          ISO_PATH=$(readlink -f result/iso/*.iso)
+          ISO_NAME=$(basename "$ISO_PATH")
+          echo "path=$ISO_PATH" >> $GITHUB_OUTPUT
+          echo "name=$ISO_NAME" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.iso.outputs.path }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload ISO artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nixos-iso
+          path: ${{ steps.iso.outputs.path }}
+          retention-days: 30
