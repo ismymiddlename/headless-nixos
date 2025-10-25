@@ -87,7 +87,7 @@ If the build succeeds, the configuration is valid.
 
 ## Expected Results
 
-- ISO size: ~700MB - 1.5GB (depending on included packages)
+- ISO size: ~800MB - 1GB (minimal NixOS live system with vim, wget, curl, git)
 - Boot time: Fast (minimal configuration)
 - SSH available immediately after boot
 - User `nixos` with password `changeit` working
