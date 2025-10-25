@@ -7,6 +7,7 @@
   # Enable SSH service
   services.openssh = {
     enable = true;
+    openFirewall = true;
     settings = {
       PermitRootLogin = "yes";
       PasswordAuthentication = true;
@@ -15,7 +16,6 @@
 
   # Network configuration
   networking.useDHCP = true;
-  networking.firewall.allowedTCPPorts = [ 22 ];
 
   # Default user configuration
   users.users.nixos = {
