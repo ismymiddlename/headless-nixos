@@ -9,6 +9,8 @@ on:
 jobs:
   build-x86_64:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout repository
@@ -41,6 +43,8 @@ jobs:
 
   build-rpi4:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     
     steps:
       - name: Checkout repository
