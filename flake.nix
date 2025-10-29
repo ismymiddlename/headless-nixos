@@ -23,14 +23,7 @@
       modules = [
         nixos-hardware.nixosModules.raspberry-pi-4
         ./configuration.nix
-        {
-          # Raspberry Pi 4 specific configuration
-          hardware.raspberry-pi."4".apply-overlays-dtmerge.enable = true;
-          hardware.deviceTree.enable = true;
-          
-          # Enable required firmware and tools
-          hardware.enableRedistributableFirmware = true;
-        }
+        ./rpi4-hardware.nix
       ];
     };
 
@@ -51,14 +44,7 @@
         modules = [
           nixos-hardware.nixosModules.raspberry-pi-4
           ./configuration.nix
-          {
-            # Raspberry Pi 4 specific configuration
-            hardware.raspberry-pi."4".apply-overlays-dtmerge.enable = true;
-            hardware.deviceTree.enable = true;
-            
-            # Enable required firmware and tools
-            hardware.enableRedistributableFirmware = true;
-          }
+          ./rpi4-hardware.nix
         ];
       };
     };

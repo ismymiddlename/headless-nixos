@@ -9,8 +9,6 @@ on:
 jobs:
   build-x86_64:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     
     steps:
       - name: Checkout repository
@@ -34,15 +32,6 @@ jobs:
           echo "path=$ISO_PATH" >> $GITHUB_OUTPUT
           echo "name=$ISO_NAME" >> $GITHUB_OUTPUT
 
-      - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: ${{ steps.iso.outputs.path }}
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload ISO artifact
         uses: actions/upload-artifact@v4
         with:
@@ -52,8 +41,6 @@ jobs:
 
   build-rpi4:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     
     steps:
       - name: Checkout repository
@@ -86,18 +73,39 @@ jobs:
           echo "path=$SD_PATH" >> $GITHUB_OUTPUT
           echo "name=$SD_NAME" >> $GITHUB_OUTPUT
 
-      - name: Create Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: ${{ steps.sdimage.outputs.path }}
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Upload SD image artifact
         uses: actions/upload-artifact@v4
         with:
           name: nixos-sd-image-rpi4
           path: ${{ steps.sdimage.outputs.path }}
           retention-days: 30
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [build-x86_64, build-rpi4]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Download x86_64 ISO artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nixos-iso-x86_64
+          path: ./artifacts/x86_64
+
+      - name: Download Raspberry Pi 4 SD image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nixos-sd-image-rpi4
+          path: ./artifacts/rpi4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ./artifacts/x86_64/*
+            ./artifacts/rpi4/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
