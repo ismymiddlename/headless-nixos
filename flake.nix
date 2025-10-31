@@ -18,6 +18,7 @@
       ];
     };
 
+    # Raspberry Pi 4 and Compute Module 4 (same BCM2711 SoC)
     nixosConfigurations.headless-rpi4 = nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
       modules = [
@@ -38,6 +39,7 @@
     };
 
     packages.aarch64-linux = {
+      # SD image for Raspberry Pi 4 and Compute Module 4
       sd-image = nixos-generators.nixosGenerate {
         system = "aarch64-linux";
         format = "sd-aarch64";

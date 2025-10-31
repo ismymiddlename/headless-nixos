@@ -8,7 +8,7 @@ A minimal NixOS configuration ready for bare-metal deployment with SSH access.
 - **SSH Access**: OpenSSH server enabled and configured
 - **Default User**: Username `nixos` with password `changeit`
 - **NixOS 25.05**: Stable release
-- **Multi-Architecture**: Supports x86_64 (ISO) and ARM64/aarch64 (Raspberry Pi 4)
+- **Multi-Architecture**: Supports x86_64 (ISO) and ARM64/aarch64 (Raspberry Pi 4 and Compute Module 4)
 - **Automated Builds**: GitHub Actions workflow to build and release images
 
 ## Quick Start
@@ -17,13 +17,13 @@ A minimal NixOS configuration ready for bare-metal deployment with SSH access.
 
 Download the latest images from the [Releases](https://github.com/ismymiddlename/headless-nixos/releases) page:
 - **x86_64 ISO**: For regular PCs and servers
-- **Raspberry Pi 4 SD Image**: For Raspberry Pi 4 (ARM64/aarch64)
+- **Raspberry Pi 4/CM4 SD Image**: For Raspberry Pi 4 and Compute Module 4 (ARM64/aarch64)
 
 ### Build Locally
 
 Requirements:
 - Nix with flakes enabled
-- For Raspberry Pi 4: QEMU with aarch64 support (for cross-compilation on x86_64)
+- For Raspberry Pi 4/CM4: QEMU with aarch64 support (for cross-compilation on x86_64)
 
 #### x86_64 ISO
 
@@ -39,7 +39,7 @@ nix build .#iso
 ls -lh result/iso/
 ```
 
-#### Raspberry Pi 4 SD Image
+#### Raspberry Pi 4/CM4 SD Image
 
 ```bash
 # Clone the repository
@@ -66,7 +66,7 @@ ls -lh result/sd-image/
    # Password: changeit
    ```
 
-### Raspberry Pi 4 (SD Card Image)
+### Raspberry Pi 4 / Compute Module 4
 
 1. Write the SD card image to an SD card (minimum 8GB recommended):
    ```bash
@@ -78,9 +78,9 @@ ls -lh result/sd-image/
    ```
    Or use a GUI tool like [balenaEtcher](https://www.balena.io/etcher/) or [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
 
-2. Insert the SD card into your Raspberry Pi 4
+2. Insert the SD card into your Raspberry Pi 4 or CM4 carrier board
 3. Connect Ethernet cable (recommended for first boot)
-4. Power on the Raspberry Pi 4
+4. Power on the Raspberry Pi 4 or CM4
 5. Wait for the system to boot (first boot may take longer)
 6. Find the IP address (check your router or use `nmap`)
 7. Connect via SSH:
@@ -116,10 +116,19 @@ To customize the configuration:
    nix build .#iso
    ```
 
+## Raspberry Pi Compute Module 4 Notes
+
+The SD image is compatible with both Raspberry Pi 4 and Compute Module 4, as they use the same BCM2711 SoC. Key considerations for CM4:
+
+- **CM4 with eMMC**: Use `rpiboot` tool to expose eMMC as a USB mass storage device, then write the image using the same method as SD cards
+- **CM4 Lite** (no eMMC): Use SD card exactly like Raspberry Pi 4
+- **Carrier Board Dependencies**: Ensure your CM4 carrier board exposes necessary interfaces (Ethernet, USB, etc.)
+- **WiFi/Bluetooth**: Only available on CM4 variants with wireless capability
+
 ## GitHub Actions
 
 The repository includes a GitHub Actions workflow that:
-- Builds both x86_64 ISO and Raspberry Pi 4 SD images automatically on tag pushes
+- Builds both x86_64 ISO and Raspberry Pi 4/CM4 SD images automatically on tag pushes
 - Creates releases with both images as artifacts
 - Can be triggered manually via workflow_dispatch
 

@@ -65,7 +65,7 @@ jobs:
         with:
           platforms: arm64
 
-      - name: Build Raspberry Pi 4 SD Image
+      - name: Build Raspberry Pi 4/CM4 SD Image
         run: |
           nix build .#packages.aarch64-linux.sd-image --print-build-logs
 
@@ -80,7 +80,7 @@ jobs:
       - name: Upload SD image artifact
         uses: actions/upload-artifact@v4
         with:
-          name: nixos-sd-image-rpi4
+          name: nixos-sd-image-rpi4-cm4
           path: ${{ steps.sdimage.outputs.path }}
           retention-days: 30
 
@@ -98,10 +98,10 @@ jobs:
           name: nixos-iso-x86_64
           path: ./artifacts/x86_64
 
-      - name: Download Raspberry Pi 4 SD image artifact
+      - name: Download Raspberry Pi 4/CM4 SD image artifact
         uses: actions/download-artifact@v4
         with:
-          name: nixos-sd-image-rpi4
+          name: nixos-sd-image-rpi4-cm4
           path: ./artifacts/rpi4
 
       - name: Create Release
