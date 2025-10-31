@@ -30,14 +30,22 @@ nix flake check
 # Check the flake structure
 nix flake show
 
-# Build the ISO (this will take some time)
+# Build the x86_64 ISO (this will take some time)
 nix build .#iso --print-build-logs
 
 # Check the result
 ls -lh result/iso/
+
+# Build the Raspberry Pi 4 SD image (requires aarch64 support)
+nix build .#packages.aarch64-linux.sd-image --print-build-logs
+
+# Check the result
+ls -lh result/sd-image/
 ```
 
 ## Deployment Testing
+
+### x86_64 ISO Testing
 
 To test the ISO on actual hardware or VM:
 
@@ -75,6 +83,56 @@ To test the ISO on actual hardware or VM:
    sudo echo "Sudo works!"
    ```
 
+### Raspberry Pi 4 SD Image Testing
+
+To test the SD image on Raspberry Pi 4:
+
+1. Build or download the SD card image
+2. Write to SD card:
+   ```bash
+   # Decompress if needed
+   zstd -d result/sd-image/*.img.zst
+   
+   # Write to SD card (replace /dev/sdX with your SD card)
+   sudo dd if=result/sd-image/*.img of=/dev/sdX bs=4M status=progress conv=fsync
+   ```
+
+3. Insert SD card into Raspberry Pi 4
+4. Connect Ethernet cable (recommended for first boot)
+5. Power on the Raspberry Pi 4
+6. Wait for boot (first boot takes longer due to partition expansion)
+7. Find the IP address:
+   ```bash
+   # From another machine on the same network
+   nmap -sn 192.168.1.0/24 | grep -B 2 "Raspberry Pi"
+   # Or check your router's DHCP client list
+   ```
+
+8. Test SSH access:
+   ```bash
+   ssh nixos@<raspberry-pi-ip>
+   # Password: changeit
+   ```
+
+9. Verify the system:
+   ```bash
+   # Check NixOS version
+   nixos-version
+   
+   # Check architecture
+   uname -m
+   # Should output: aarch64
+   
+   # Check SSH is running
+   systemctl status sshd
+   
+   # Check Raspberry Pi specific hardware
+   lscpu | grep -i "architecture\|vendor\|model"
+   
+   # Test sudo access
+   sudo echo "Sudo works!"
+   ```
+
 ## Configuration Validation
 
 The Nix build process itself validates:
@@ -87,9 +145,19 @@ If the build succeeds, the configuration is valid.
 
 ## Expected Results
 
+### x86_64 ISO
 - ISO size: ~800MB - 1GB (minimal NixOS live system with vim, wget, curl, git)
 - Boot time: Fast (minimal configuration)
 - SSH available immediately after boot
 - User `nixos` with password `changeit` working
 - Sudo access without password for wheel group
 - Network configured via DHCP
+
+### Raspberry Pi 4 SD Image
+- SD image size: ~2-3GB (includes firmware and Raspberry Pi specific drivers)
+- Boot time: ~30-60 seconds first boot (partition expansion), faster on subsequent boots
+- SSH available after boot completion
+- User `nixos` with password `changeit` working
+- Sudo access without password for wheel group
+- Network configured via DHCP (Ethernet recommended for first boot)
+- Architecture: aarch64
