@@ -36,7 +36,7 @@ nix build .#iso --print-build-logs
 # Check the result
 ls -lh result/iso/
 
-# Build the Raspberry Pi 4 SD image (requires aarch64 support)
+# Build the Raspberry Pi 4/CM4 SD image (requires aarch64 support)
 nix build .#packages.aarch64-linux.sd-image --print-build-logs
 
 # Check the result

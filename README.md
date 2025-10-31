@@ -23,7 +23,7 @@ Download the latest images from the [Releases](https://github.com/ismymiddlename
 
 Requirements:
 - Nix with flakes enabled
-- For Raspberry Pi 4: QEMU with aarch64 support (for cross-compilation on x86_64)
+- For Raspberry Pi 4/CM4: QEMU with aarch64 support (for cross-compilation on x86_64)
 
 #### x86_64 ISO
 
