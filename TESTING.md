@@ -83,9 +83,9 @@ To test the ISO on actual hardware or VM:
    sudo echo "Sudo works!"
    ```
 
-### Raspberry Pi 4 SD Image Testing
+### Raspberry Pi 4 / Compute Module 4 SD Image Testing
 
-To test the SD image on Raspberry Pi 4:
+To test the SD image on Raspberry Pi 4 or Compute Module 4:
 
 1. Build or download the SD card image
 2. Write to SD card:
@@ -97,9 +97,11 @@ To test the SD image on Raspberry Pi 4:
    sudo dd if=result/sd-image/*.img of=/dev/sdX bs=4M status=progress conv=fsync
    ```
 
-3. Insert SD card into Raspberry Pi 4
+3. Insert SD card into Raspberry Pi 4 or CM4 carrier board (for CM4 Lite)
+   - **For CM4 with eMMC**: Use `rpiboot` to expose eMMC as USB storage, then write the image
+   - **For CM4 Lite**: Insert SD card into carrier board's SD slot
 4. Connect Ethernet cable (recommended for first boot)
-5. Power on the Raspberry Pi 4
+5. Power on the Raspberry Pi 4 or CM4
 6. Wait for boot (first boot takes longer due to partition expansion)
 7. Find the IP address:
    ```bash
@@ -153,7 +155,7 @@ If the build succeeds, the configuration is valid.
 - Sudo access without password for wheel group
 - Network configured via DHCP
 
-### Raspberry Pi 4 SD Image
+### Raspberry Pi 4 / Compute Module 4 SD Image
 - SD image size: ~2-3GB (includes firmware and Raspberry Pi specific drivers)
 - Boot time: ~30-60 seconds first boot (partition expansion), faster on subsequent boots
 - SSH available after boot completion
@@ -161,3 +163,4 @@ If the build succeeds, the configuration is valid.
 - Sudo access without password for wheel group
 - Network configured via DHCP (Ethernet recommended for first boot)
 - Architecture: aarch64
+- **CM4 Note**: Works on both CM4 with eMMC (using rpiboot) and CM4 Lite (using SD card)
