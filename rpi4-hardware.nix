@@ -17,8 +17,10 @@
   boot.initrd.availableKernelModules = [
     # Storage
     "mmc_block"
-    "usbhid"
     "usb_storage"
+    
+    # USB/Input
+    "usbhid"
     
     # Filesystems
     "ext4"
